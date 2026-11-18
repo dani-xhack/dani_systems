@@ -1,0 +1,105 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Управление заявками | Dani Systems</title>
+<link rel="stylesheet" href="{% static 'web/css/style.css' %}">
+<style>
+.tr{cursor:pointer;transition:.2s;border-bottom:1px solid rgba(255,255,255,.08)}
+.tr:hover{background:rgba(0,210,255,.08)}.tr.act{background:rgba(0,210,255,.16)}.tc{padding:.65rem}
+.ds{background:#0f172a;color:#f8fafc;border:1px solid var(--glass-border);padding:.35rem .5rem;border-radius:10px;font-size:.85rem}
+.da{width:100%;padding:.6rem;background:rgba(0,0,0,.25);border:1px solid var(--glass-border);color:#fff;border-radius:10px;font-family:inherit;font-size:.9rem}
+</style>
+</head>
+<body>
+<header><div class="logo">Dani Systems</div></header>
+<div class="site-wrapper" style="display:flex;flex-direction:column;align-items:center;min-height:70vh">
+<main style="width:100%;max-width:1100px;text-align:left;align-items:stretch">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+<h2>Управление заявками</h2>
+<a href="/admin/" class="btn" style="padding:.5rem 1.2rem;font-size:.9rem">← В админку</a>
+</div>
+
+{% if leads %}
+<div class="service-card" style="padding:1rem;margin-bottom:1.5rem;border-color:var(--accent)">
+<b style="color:var(--accent)">Новые лиды с сайта ({{leads|length}}):</b>
+<div style="display:flex;flex-wrap:wrap;gap:.8rem;margin-top:.5rem;font-size:.9rem">
+{% for l in leads %}<span style="background:rgba(0,0,0,.25);padding:.3rem .7rem;border-radius:10px">{{l.name}} — <b>{{l.phone}}</b></span>{% endfor %}
+</div></div>
+{% endif %}
+
+{% if review_tickets %}
+<h3 style="margin-bottom:.8rem;color:var(--accent)">Заявки на проверку ({{review_tickets|length}})</h3>
+<div class="service-card" style="padding:.8rem;margin-bottom:1.5rem;overflow-x:auto;border-color:var(--accent)">
+<table style="width:100%;border-collapse:collapse;font-size:.9rem;text-align:left">
+<thead><tr style="border-bottom:1px solid var(--glass-border);color:var(--text-muted)">
+<th class="tc">№</th><th class="tc">Тема</th><th class="tc">Клиент</th><th class="tc">Осталось</th><th class="tc">Партнёр</th><th class="tc">Статус</th>
+</tr></thead>
+<tbody>
+{% for t in review_tickets %}
+<tr class="tr" onclick="sel(this)" data-id="{{t.id}}" data-sub="{{t.subject}}" data-sc="{{t.status}}" data-st="{{t.get_status_display}}" data-cl="{{t.client_name}}" data-ph="{{t.phone|default:'нет'}}" data-pt="{{t.partner|default:'Я сам'}}" data-rm="{{t.remaining_time}}" data-tm="{{t.time_spent}}" data-ds="{{t.description}}" data-dt="{{t.created_at|date:'d.m.Y H:i'}}" data-rs="{{t.result|default:''}}">
+<td class="tc">#{{t.id}}</td><td class="tc"><b>{{t.subject}}</b></td><td class="tc">{{t.client_name}}</td>
+<td class="tc"><b style="color:{% if t.remaining_time < 0 %}#ff6b6b{% else %}#4ade80{% endif %}">{{t.remaining_time}} м.</b></td>
+<td class="tc">{{t.partner.user.username|default:'Я сам'}}</td>
+<td class="tc"><b style="color:var(--accent)">{{t.get_status_display}}</b></td>
+</tr>
+{% endfor %}
+</tbody></table></div>
+{% endif %}
+
+{% if tickets %}
+<h3 style="margin-bottom:.8rem">Все заявки</h3>
+<div class="service-card" style="padding:.8rem;margin-bottom:1.5rem;overflow-x:auto">
+<table style="width:100%;border-collapse:collapse;font-size:.9rem;text-align:left">
+<thead><tr style="border-bottom:1px solid var(--glass-border);color:var(--text-muted)">
+<th class="tc">№</th><th class="tc">Тема</th><th class="tc">Клиент</th><th class="tc">Осталось</th><th class="tc">Исполнитель</th><th class="tc">Статус</th>
+</tr></thead>
+<tbody>
+{% for t in tickets %}
+<tr class="tr {% if forloop.first %}act{% endif %}" onclick="sel(this)" data-id="{{t.id}}" data-sub="{{t.subject}}" data-sc="{{t.status}}" data-st="{{t.get_status_display}}" data-cl="{{t.client_name}}" data-ph="{{t.phone|default:'нет'}}" data-pt="{{t.partner|default:'Я сам'}}" data-rm="{{t.remaining_time}}" data-tm="{{t.time_spent}}" data-ds="{{t.description}}" data-dt="{{t.created_at|date:'d.m.Y H:i'}}" data-rs="{{t.result|default:''}}">
+<td class="tc">#{{t.id}}</td><td class="tc"><b>{{t.subject}}</b></td><td class="tc">{{t.client_name}}</td>
+<td class="tc"><b style="color:{% if t.remaining_time < 0 %}#ff6b6b{% else %}#4ade80{% endif %}">{{t.remaining_time}} м.</b></td>
+<form method="POST" action="{% url 'update_ticket_admin' t.id %}">{% csrf_token %}
+<td class="tc" onclick="event.stopPropagation()"><select name="partner_id" class="ds" onchange="this.form.submit()"><option value="">— Я сам —</option>{% for p in partners %}<option value="{{p.id}}" {% if t.partner_id == p.id %}selected{% endif %}>{{p.user.username}}</option>{% endfor %}</select></td>
+<td class="tc" onclick="event.stopPropagation()"><select name="status" class="ds" onchange="this.form.submit()"><option value="new" {% if t.status == 'new' %}selected{% endif %}>Новая</option><option value="in_progress" {% if t.status == 'in_progress' %}selected{% endif %}>В работе</option><option value="on_review" {% if t.status == 'on_review' %}selected{% endif %}>На проверке</option><option value="closed" {% if t.status == 'closed' %}selected{% endif %}>Закрыта</option></select></td>
+</form></tr>
+{% endfor %}
+</tbody></table></div>
+
+{% with f=tickets.0 %}
+<div class="service-card" style="padding:1.2rem">
+<div style="display:flex;justify-content:space-between;margin-bottom:.5rem;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:.5rem">
+<strong id="d-t">#{{f.id}} — {{f.subject}}</strong><b id="d-s" style="color:var(--accent)">{{f.get_status_display}}</b></div>
+<p style="font-size:.9rem;margin-bottom:.6rem"><b>Клиент:</b> <span id="d-c">{{f.client_name}}</span> (<span id="d-p">{{f.phone|default:"нет"}}</span>) | <b>Исполнитель:</b> <span id="d-pt">{{f.partner|default:"Я сам"}}</span> | <b>Осталось:</b> <b id="d-rm" style="color:#4ade80">{{f.remaining_time}}</b> мин. (затрачено: <span id="d-tm">{{f.time_spent}}</span>)</p>
+<p id="d-d" style="background:rgba(0,0,0,.2);padding:.8rem;border-radius:10px;white-space:pre-wrap;font-size:.9rem">{{f.description}}</p>
+<p id="d-rsb" style="{% if not f.result %}display:none;{% endif %}margin-top:.6rem;color:#4ade80"><b>Результат:</b> <span id="d-rs">{{f.result|default:""}}</span></p>
+
+<div id="rev-actions" style="{% if f.status != 'on_review' %}display:none;{% endif %}margin-top:1rem;border-top:1px solid rgba(255,255,255,.1);padding-top:1rem;gap:.8rem;flex-wrap:wrap;align-items:center">
+<form id="f-close" method="POST" action="{% url 'review_ticket_admin' f.id %}" style="margin:0">{% csrf_token %}<input type="hidden" name="action" value="close">
+<button class="btn" style="padding:.5rem 1rem;font-size:.85rem">✓ Закрыть заявку</button></form>
+<form id="f-rework" method="POST" action="{% url 'review_ticket_admin' f.id %}" style="display:flex;gap:.5rem;flex:1;min-width:260px;margin:0">{% csrf_token %}<input type="hidden" name="action" value="rework">
+<input type="text" name="revision_comment" placeholder="Что доработать..." required class="da">
+<button class="btn" style="padding:.5rem 1rem;font-size:.85rem;background:rgba(255,107,107,.2);border:1px solid #ff6b6b;box-shadow:none;white-space:nowrap">↺ На доработку</button></form>
+</div>
+
+<p style="font-size:.8rem;color:#94a3b8;margin-top:.6rem">Создана: <span id="d-dt">{{f.created_at|date:"d.m.Y H:i"}}</span></p>
+</div>
+{% endwith %}
+{% endif %}
+</main></div>
+<footer><p>&copy; 2026 Dani Systems.</p></footer>
+<script>
+function sel(r){
+document.querySelectorAll('.tr').forEach(x=>x.classList.remove('act'));r.classList.add('act');
+const d=r.dataset,g=id=>document.getElementById(id);
+g('d-t').textContent='#'+d.id+' — '+d.sub;g('d-s').textContent=d.st;g('d-c').textContent=d.cl;g('d-p').textContent=d.ph;
+g('d-pt').textContent=d.pt;g('d-rm').textContent=d.rm;g('d-tm').textContent=d.tm;g('d-d').textContent=d.ds;g('d-dt').textContent=d.dt;
+g('d-rsb').style.display=d.rs?'block':'none';g('d-rs').textContent=d.rs;
+const ra=g('rev-actions');
+if(d.sc==='on_review'){g('f-close').action='/manage/review/'+d.id+'/';g('f-rework').action='/manage/review/'+d.id+'/';ra.style.display='flex';}
+else{ra.style.display='none';}
+}
+</script>
+</body></html>
+

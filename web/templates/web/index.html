@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dani Systems</title>
+    <link rel="stylesheet" href="{% static 'web/css/style.css' %}">
+</head>
+<body>
+    <header>
+        <div class="logo">Dani Systems</div>
+    </header>
+
+    <div class="site-wrapper">
+        <main>
+            <h1>Учет для бизнеса на АУСН</h1>
+            <p>Без бухгалтера, серверов и головной боли.</p>
+            <a href="#contact" class="btn">Получить консультацию</a>
+        </main>
+
+        <section class="about">
+            <h2>Почему я?</h2>
+            <div class="about-content">
+                <p>Я не просто перепродаю облако. У меня есть диплом 1С-программиста.</p>
+                <p>Я сам настраиваю базы, пишу отчеты и решаю технические проблемы. Поэтому мой пакет поддержки — это помощь эксперта, а не чтение инструкций вслух.</p>
+            </div>
+        </section>
+
+        <section class="services">
+            <h2>Наши услуги</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>Пакет «Старт»</h3>
+                    <p>Быстрый и безопасный переезд в облако 1С:Фреш.</p>
+                    <ul>
+                        <li>Перенос базы</li>
+                        <li>Настройка доступа</li>
+                        <li>1 месяц консультаций</li>
+                    </ul>
+                </div>
+                <div class="service-card">
+                    <h3>Пакет «Комфорт»</h3>
+                    <p>Забудьте о технических проблемах.</p>
+                    <ul>
+                        <li>Поддержка до 10 часов/мес</li>
+                        <li>Мелкие доработки</li>
+                        <li>Срочная помощь</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="faq">
+            <h2>Частые вопросы</h2>
+            <div class="faq-item">
+                <h3>Можно ли перенести мою базу в облако?</h3>
+                <p>Да, перенесем всё: справочники, документы, настройки. Ошибки при переносе могут стоить недель восстановления, поэтому лучше доверить это специалисту.</p>
+            </div>
+            <div class="faq-item">
+                <h3>А если у нас пропадет интернет?</h3>
+                <p>1С:Фреш работает в браузере. Я могу настроить автономное рабочее место (АРМ), чтобы вы могли работать даже при обрывах связи.</p>
+            </div>
+            <div class="faq-item">
+                <h3>Сложно ли бухгалтеру переучиваться?</h3>
+                <p>Интерфейс тот же, что и в обычной 1С. Я проведу первичное обучение и буду на связи в первый месяц.</p>
+            </div>
+        </section>
+        <section id="contact" class="contact">
+            <h2>Остались вопросы?</h2>
+            {% if request.GET.success %}
+                <p style="color: var(--accent); font-weight: bold; margin-bottom: 1rem;">Спасибо! Ваша заявка отправлена. Я свяжусь с вами в ближайшее время.</p>
+            {% endif %}
+            <form method="POST" class="contact-form">
+                {% csrf_token %}
+                <input type="text" name="name" placeholder="Ваше имя" required>
+                <input type="tel" name="phone" placeholder="Телефон или MAX" required>
+                <button type="submit" class="btn">Отправить</button>
+            </form>
+
+            <p>Или напишите мне сразу:</p>
+            <a href="https://max.ru/" target="_blank" class="btn">Написать в MAX</a>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Dani Systems. Все права защищены.</p>
+    </footer>
+      {% if request.GET.success %}
+        <script>
+         // Убираем ?success=1 из адресной строки без перезагрузки
+         if (window.history.replaceState) {
+         window.history.replaceState(null, null, window.location.pathname);
+              }
+        </script>
+      {% endif %}
+</body>
+</html>

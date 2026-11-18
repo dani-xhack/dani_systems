@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в Dani Systems</title>
+    <link rel="stylesheet" href="{% static 'web/css/style.css' %}">
+</head>
+<body>
+    <header>
+        <div class="logo">Dani Systems</div>
+    </header>
+
+    <div class="site-wrapper" style="display: flex; justify-content: center; align-items: center; min-height: 70vh;">
+        <main style="width: 100%; max-width: 400px;">
+            <h2>Вход в личный кабинет</h2>
+            
+            {% if form.errors %}
+                <p style="color: #ff6b6b; text-align: center; margin-bottom: 1rem;">Неверный логин или пароль.</p>
+            {% endif %}
+
+            <form method="post" class="contact-form">
+                {% csrf_token %}
+                <input type="text" name="username" placeholder="Логин" required>
+                <input type="password" name="password" placeholder="Пароль" required>
+                <button type="submit" class="btn">Войти</button>
+            </form>
+            
+            <p style="text-align: center; margin-top: 1.5rem;">
+                <a href="/" style="color: var(--accent); text-decoration: none;">← Вернуться на главную</a>
+            </p>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Dani Systems. Все права защищены.</p>
+    </footer>
+</body>
+</html>

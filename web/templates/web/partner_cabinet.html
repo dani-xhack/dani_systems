@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кабинет партнёра | Dani Systems</title>
+<link rel="stylesheet" href="{% static 'web/css/style.css' %}">
+<style>
+.tr{cursor:pointer;transition:.2s;border-bottom:1px solid rgba(255,255,255,.08)}
+.tr:hover{background:rgba(0,210,255,.08)}.tr.act{background:rgba(0,210,255,.16)}.tc{padding:.65rem}
+.da{width:100%;padding:.7rem;background:rgba(0,0,0,.25);border:1px solid var(--glass-border);color:#fff;border-radius:12px;font-family:inherit}
+.da:focus{outline:none;border-color:var(--accent)}
+</style>
+</head>
+<body>
+<header><div class="logo">Dani Systems</div></header>
+<div class="site-wrapper" style="display:flex;flex-direction:column;align-items:center;min-height:70vh">
+<main style="width:100%;max-width:1000px;text-align:left;align-items:stretch">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+<h2>Партнёр: {{ user.username }}</h2>
+<a href="{% url 'logout' %}" class="btn" style="padding:.5rem 1.2rem;font-size:.9rem">Выйти</a>
+</div>
+{% if tickets %}
+<div class="service-card" style="padding:.8rem;margin-bottom:1.5rem;overflow-x:auto">
+<table style="width:100%;border-collapse:collapse;font-size:.9rem;text-align:left">
+<thead><tr style="border-bottom:1px solid var(--glass-border);color:var(--text-muted)">
+<th class="tc">№</th><th class="tc">Тема</th><th class="tc">Клиент</th><th class="tc">Осталось</th><th class="tc">Статус</th><th class="tc">Действия</th>
+</tr></thead>
+<tbody>
+{% for t in tickets %}
+<tr class="tr {% if forloop.first %}act{% endif %}" onclick="sel(this)" data-id="{{t.id}}" data-sub="{{t.subject}}" data-sc="{{t.status}}" data-st="{{t.get_status_display}}" data-cl="{{t.client_name}}" data-ph="{{t.phone|default:'нет'}}" data-ds="{{t.description}}" data-dt="{{t.created_at|date:'d.m.Y H:i'}}" data-rs="{{t.result|default:''}}" data-tm="{{t.time_spent}}" data-rm="{{t.remaining_time}}" data-rv="{{t.revision_comment|default:''}}">
+<td class="tc">#{{t.id}}</td>
+<td class="tc"><strong>{{t.subject}}</strong>{% if t.revision_comment %}<br><small style="color:#ff6b6b">⚠ Доработка</small>{% endif %}</td>
+<td class="tc">{{t.client_name}}</td>
+<td class="tc"><b style="color:{% if t.remaining_time < 0 %}#ff6b6b{% else %}#4ade80{% endif %}">{{t.remaining_time}} м.</b></td>
+<td class="tc"><b style="color:var(--accent)">{{t.get_status_display}}</b></td>
+<td class="tc" onclick="event.stopPropagation()">
+<div style="display:flex;gap:.4rem">
+{% if t.status == 'new' %}<form method="POST" action="{% url 'take_ticket' t.id %}">{% csrf_token %}<button class="btn" style="padding:.3rem .7rem;font-size:.8rem">Взять</button></form>{% endif %}
+{% if t.status == 'new' or t.status == 'in_progress' %}<form method="POST" action="{% url 'drop_ticket' t.id %}" onsubmit="return confirm('Отказаться?')">{% csrf_token %}<button class="btn" style="padding:.3rem .7rem;font-size:.8rem;background:rgba(255,107,107,.2);border:1px solid #ff6b6b;box-shadow:none">Отказ</button></form>{% endif %}
+</div></td></tr>
+{% endfor %}
+</tbody></table></div>
+
+{% with f=tickets.0 %}
+<div class="service-card" style="padding:1.5rem">
+<div style="display:flex;justify-content:space-between;margin-bottom:.75rem;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:.5rem">
+<strong id="d-t" style="font-size:1.1rem">#{{f.id}} — {{f.subject}}</strong>
+<b id="d-s" style="color:var(--accent)">{{f.get_status_display}}</b>
+</div>
+<p style="font-size:.9rem;margin-bottom:.75rem"><b>Клиент:</b> <span id="d-c">{{f.client_name}}</span> (<span id="d-p">{{f.phone|default:"нет"}}</span>) | <b>Осталось:</b> <b id="d-rm" style="color:#4ade80">{{f.remaining_time}}</b> мин. (затрачено: <span id="d-tm">{{f.time_spent}}</span>)</p>
+<div id="d-rvb" style="{% if not f.revision_comment %}display:none;{% endif %}background:rgba(255,107,107,.15);border:1px solid #ff6b6b;padding:.8rem;border-radius:10px;margin-bottom:.8rem;color:#fecaca"><b>Замечание:</b> <span id="d-rv">{{f.revision_comment|default:""}}</span></div>
+<p id="d-d" style="background:rgba(0,0,0,.2);padding:.9rem;border-radius:10px;white-space:pre-wrap;font-size:.95rem">{{f.description}}</p>
+<p id="d-rsb" style="{% if not f.result %}display:none;{% endif %}margin-top:.8rem;color:#4ade80"><b>Отчёт:</b> <span id="d-rs">{{f.result|default:""}}</span></p>
+<form id="cf" method="POST" action="{% url 'complete_ticket' f.id %}" style="{% if f.status != 'in_progress' %}display:none;{% endif %}margin-top:1.2rem;border-top:1px solid rgba(255,255,255,.1);padding-top:1rem">
+{% csrf_token %}<h4 style="margin-bottom:.6rem;color:var(--accent)">Сдать заявку</h4>
+<textarea name="result" rows="3" class="da" placeholder="Что сделано..." required style="margin-bottom:.6rem">{{f.result|default:''}}</textarea>
+<div style="display:flex;gap:.8rem;align-items:center">
+<input type="number" name="time_spent" min="1" placeholder="Минут" required class="da" style="width:140px">
+<button type="submit" class="btn" style="padding:.6rem 1.2rem;font-size:.9rem">На проверку</button>
+</div></form>
+<p style="font-size:.8rem;color:#94a3b8;margin-top:.8rem">Создана: <span id="d-dt">{{f.created_at|date:"d.m.Y H:i"}}</span></p>
+</div>
+{% endwith %}
+{% else %}<p style="color:#94a3b8">Нет назначенных заявок.</p>{% endif %}
+</main></div>
+<footer><p>&copy; 2026 Dani Systems.</p></footer>
+<script>
+function sel(r){
+document.querySelectorAll('.tr').forEach(x=>x.classList.remove('act'));r.classList.add('act');
+const d=r.dataset,g=id=>document.getElementById(id);
+g('d-t').textContent='#'+d.id+' — '+d.sub;g('d-s').textContent=d.st;g('d-c').textContent=d.cl;g('d-p').textContent=d.ph;
+g('d-rm').textContent=d.rm;g('d-tm').textContent=d.tm;g('d-d').textContent=d.ds;g('d-dt').textContent=d.dt;
+g('d-rvb').style.display=d.rv?'block':'none';g('d-rv').textContent=d.rv;
+g('d-rsb').style.display=d.rs?'block':'none';g('d-rs').textContent=d.rs;
+const f=g('cf');
+if(d.sc==='in_progress'){f.action='/partner/complete/'+d.id+'/';f.querySelector('textarea').value=d.rs||'';f.style.display='block';}
+else{f.style.display='none';}
+}
+</script>
+</body></html>
+

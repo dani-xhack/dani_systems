@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет | Dani Systems</title>
+    <link rel="stylesheet" href="{% static 'web/css/style.css' %}">
+</head>
+<body>
+    <header>
+        <div class="logo">Dani Systems</div>
+    </header>
+
+    <div class="site-wrapper" style="display: flex; flex-direction: column; align-items: center; min-height: 70vh;">
+        <main style="width: 100%; max-width: 800px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2>Здравствуйте, {{ user.username }}!</h2>
+                <a href="{% url 'logout' %}" class="btn" style="padding: 0.5rem 1.5rem; font-size: 0.9rem;">Выйти</a>
+            </div>
+
+            <h3 style="margin-bottom: 1rem;">Мои заявки</h3>
+            
+            <div class="service-card" style="margin-bottom: 2rem; padding: 1.5rem;">
+                <h4 style="margin-bottom: 1rem;">Создать новую заявку</h4>
+                <form method="POST" class="contact-form" style="max-width: 100%;">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn">Отправить заявку</button>
+                </form>
+            </div>
+            
+            {% if tickets %}
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    {% for ticket in tickets %}
+                        <div class="service-card" style="padding: 1.5rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <strong>{{ ticket.subject }}</strong>
+                                <span style="color: var(--accent);">{{ ticket.get_status_display }}</span>
+                            </div>
+                            <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">{{ ticket.description }}</p>
+                            <p style="font-size: 0.8rem; color: #94a3b8;">Создана: {{ ticket.created_at|date:"d.m.Y H:i" }}</p>
+                            {% if ticket.result %}
+                                <p style="font-size: 0.9rem; margin-top: 0.5rem; color: #4ade80;">Результат: {{ ticket.result }}</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p style="color: #94a3b8;">У вас пока нет заявок.</p>
+            {% endif %}
+
+            <div style="margin-top: 2rem; text-align: center;">
+                <a href="/" class="btn">Вернуться на главную</a>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Dani Systems. Все права защищены.</p>
+    </footer>
+</body>
+</html>
