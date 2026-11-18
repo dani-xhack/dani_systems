@@ -20,6 +20,8 @@
 <h2>Партнёр: {{ user.username }}</h2>
 <a href="{% url 'logout' %}" class="btn" style="padding:.5rem 1.2rem;font-size:.9rem">Выйти</a>
 </div>
+
+<div id="live-area">
 {% if tickets %}
 <div class="service-card" style="padding:.8rem;margin-bottom:1.5rem;overflow-x:auto">
 <table style="width:100%;border-collapse:collapse;font-size:.9rem;text-align:left">
@@ -41,9 +43,12 @@
 </div></td></tr>
 {% endfor %}
 </tbody></table></div>
+{% else %}<p style="color:#94a3b8">Нет назначенных заявок.</p>{% endif %}
+</div>
 
+{% if tickets %}
 {% with f=tickets.0 %}
-<div class="service-card" style="padding:1.5rem">
+<div id="detail-box" class="service-card" style="padding:1.5rem">
 <div style="display:flex;justify-content:space-between;margin-bottom:.75rem;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:.5rem">
 <strong id="d-t" style="font-size:1.1rem">#{{f.id}} — {{f.subject}}</strong>
 <b id="d-s" style="color:var(--accent)">{{f.get_status_display}}</b>
@@ -62,7 +67,7 @@
 <p style="font-size:.8rem;color:#94a3b8;margin-top:.8rem">Создана: <span id="d-dt">{{f.created_at|date:"d.m.Y H:i"}}</span></p>
 </div>
 {% endwith %}
-{% else %}<p style="color:#94a3b8">Нет назначенных заявок.</p>{% endif %}
+{% endif %}
 </main></div>
 <footer><p>&copy; 2026 Dani Systems.</p></footer>
 <script>
@@ -77,6 +82,21 @@ const f=g('cf');
 if(d.sc==='in_progress'){f.action='/partner/complete/'+d.id+'/';f.querySelector('textarea').value=d.rs||'';f.style.display='block';}
 else{f.style.display='none';}
 }
+setInterval(async()=>{
+const tag=document.activeElement.tagName;
+if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT')return;
+const act=document.querySelector('.tr.act'),id=act?act.dataset.id:null;
+try{
+const res=await fetch(location.href);if(!res.ok)return;
+const doc=new DOMParser().parseFromString(await res.text(),'text/html');
+const nl=doc.getElementById('live-area');
+if(nl){
+const hadBox=!!document.getElementById('detail-box');
+document.getElementById('live-area').innerHTML=nl.innerHTML;
+if(!hadBox&&doc.getElementById('detail-box')){location.reload();return;}
+if(id){const nr=document.querySelector(`.tr[data-id="${id}"]`);if(nr)sel(nr);}
+}}catch(e){}
+},10000);
 </script>
 </body></html>
 

@@ -118,9 +118,14 @@ def update_ticket_admin(request, ticket_id):
         partner_id = request.POST.get('partner_id')
         status = request.POST.get('status')
 
+        old_partner_id = ticket.partner_id
         ticket.partner = get_object_or_404(Partner, id=partner_id) if partner_id else None
-        if status in dict(Ticket.STATUS_CHOICES):
+
+        if ticket.partner and ticket.partner_id != old_partner_id and status == 'new':
+            ticket.status = 'in_progress'
+        elif status in dict(Ticket.STATUS_CHOICES):
             ticket.status = status
+
         ticket.save()
 
     return redirect('manage_tickets')
