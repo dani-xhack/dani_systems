@@ -8,10 +8,17 @@
     <link rel="stylesheet" href="{% static 'web/css/style.css' %}">
 </head>
 <body>
-    <header>
-        <div class="logo">Dani Systems</div>
+    <header style="display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: none; padding: 0.65rem 2rem; margin: 0; min-height: auto; box-sizing: border-box;">
+        <div class="logo" style="margin: 0; font-size: 1.35rem; line-height: 1;"><a href="/" style="color: inherit; text-decoration: none;">Dani Systems</a></div>
+        <nav style="display: flex; gap: 1.5rem; align-items: center;">
+            <a href="{% url 'blog_list' %}" style="color: #f8fafc; text-decoration: none; font-weight: 500; font-size: 0.95rem;">Блог</a>
+            {% if user.is_authenticated %}
+                <a href="{% if user.is_staff %}/manage/{% elif user.partner %}{% url 'partner_cabinet' %}{% else %}{% url 'cabinet' %}{% endif %}" class="btn" style="padding: 0.35rem 1rem; font-size: 0.85rem; margin: 0;">Кабинет</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn" style="padding: 0.35rem 1rem; font-size: 0.85rem; margin: 0;">Войти</a>
+            {% endif %}
+        </nav>
     </header>
-
     <div class="site-wrapper">
         <main>
             <h1>Учет для бизнеса на АУСН</h1>
