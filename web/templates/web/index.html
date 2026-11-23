@@ -66,6 +66,60 @@
                 <p>Интерфейс тот же, что и в обычной 1С. Я проведу первичное обучение и буду на связи в первый месяц.</p>
             </div>
         </section>
+
+        <section id="reviews" class="reviews" style="margin-top: 3rem;">
+            <h2>Отзывы клиентов</h2>
+
+            {% if request.GET.review_sent %}
+                <p style="color: #4ade80; text-align: center; margin-bottom: 1.5rem; font-weight: 600;">
+                    Спасибо! Ваш отзыв отправлен и появится на сайте после проверки модератором.
+                </p>
+            {% endif %}
+
+            {% if reviews %}
+                <div style="position: relative; max-width: 900px; margin: 0 auto 2.5rem;">
+                    <div id="rev-track" style="display: flex; gap: 1.2rem; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding-bottom: 0.5rem;">
+                        {% for r in reviews|slice:":4" %}
+                            <div class="service-card" style="min-width: 280px; flex: 1 0 46%; scroll-snap-align: start; text-align: left; margin: 0;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                                    <strong style="font-size: 1.05rem;">{{ r.name }}</strong>
+                                    <span style="color: #fbbf24; letter-spacing: 2px;">
+                                        {% if r.rating == 5 %}★★★★★{% elif r.rating == 4 %}★★★★☆{% elif r.rating == 3 %}★★★☆☆{% elif r.rating == 2 %}★★☆☆☆{% else %}★☆☆☆☆{% endif %}
+                                    </span>
+                                </div>
+                                <p style="font-size: 0.95rem; line-height: 1.5; margin-bottom: 0.75rem;">{{ r.text }}</p>
+                                <small style="color: var(--text-muted);">{{ r.created_at|date:"d.m.Y" }}</small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 0.8rem;">
+                        <button type="button" class="btn" onclick="document.getElementById('rev-track').scrollBy({left: -320, behavior: 'smooth'})" style="padding: 0.4rem 1.1rem; font-size: 1.1rem;">‹</button>
+                        <button type="button" class="btn" onclick="document.getElementById('rev-track').scrollBy({left: 320, behavior: 'smooth'})" style="padding: 0.4rem 1.1rem; font-size: 1.1rem;">›</button>
+                    </div>
+                </div>
+            {% else %}
+                <p style="color: var(--text-muted); text-align: center; margin-bottom: 2rem;">Пока нет опубликованных отзывов — станьте первым!</p>
+            {% endif %}
+
+            <div class="service-card" style="max-width: 520px; margin: 0 auto; text-align: left;">
+                <h3 style="margin-bottom: 1rem; text-align: center; color: var(--accent);">Оставить отзыв</h3>
+                <form method="POST" class="contact-form" style="margin: 0 auto; max-width: 100%;">
+                    {% csrf_token %}
+                    <input type="hidden" name="form_type" value="review">
+                    <input type="text" name="name" placeholder="Ваше имя или компания" required>
+                    <select name="rating" style="width: 100%; padding: 0.9rem 1.2rem; border-radius: 15px; border: 1px solid var(--glass-border); background: rgba(15, 23, 42, 0.8); color: #fff; font-family: inherit; font-size: 1rem;">
+                        <option value="5">Оценка: ★★★★★ (5 из 5)</option>
+                        <option value="4">Оценка: ★★★★☆ (4 из 5)</option>
+                        <option value="3">Оценка: ★★★☆☆ (3 из 5)</option>
+                        <option value="2">Оценка: ★★☆☆☆ (2 из 5)</option>
+                        <option value="1">Оценка: ★☆☆☆☆ (1 из 5)</option>
+                    </select>
+                    <textarea name="text" rows="3" placeholder="Напишите пару слов о нашей работе..." required style="width: 100%; padding: 0.9rem 1.2rem; border-radius: 15px; border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.08); color: #fff; font-family: inherit; font-size: 1rem;"></textarea>
+                    <button type="submit" class="btn">Отправить отзыв</button>
+                </form>
+            </div>
+        </section>
+
         <section id="contact" class="contact">
             <h2>Остались вопросы?</h2>
             {% if request.GET.success %}

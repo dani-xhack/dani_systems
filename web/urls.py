@@ -3,6 +3,10 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('blog/', views.blog_list, name='blog_list'),
+    path('blog/<int:post_id>/', views.blog_detail, name='blog_detail'),
+    path('register/', views.register_user, {'role': 'client'}, name='register_client'),
+    path('register/partner/', views.register_user, {'role': 'partner'}, name='register_partner'),
     path('cabinet/', views.cabinet, name='cabinet'),
     path('partner/', views.partner_cabinet, name='partner_cabinet'),
     path('partner/take/<int:ticket_id>/', views.take_ticket, name='take_ticket'),

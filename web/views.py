@@ -1,16 +1,58 @@
+from .models import Lead, Ticket, Partner, Review, Post
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Lead, Ticket, Partner
+from django.contrib.auth.models import User
+from django.contrib.auth import login
+from .models import Lead, Ticket, Partner, Review
 from .forms import TicketForm
 
 def index(request):
     if request.method == 'POST':
-        name = request.POST.get('name')
-        phone = request.POST.get('phone')
-        if name and phone:
-            Lead.objects.create(name=name, phone=phone)
-            return redirect('/?success=1')
-    return render(request, 'web/index.html')
+        form_type = request.POST.get('form_type')
+        if form_type == 'review':
+            name = request.POST.get('name', '').strip()
+            text = request.POST.get('text', '').strip()
+            try:
+                rating = min(5, max(1, int(request.POST.get('rating', 5))))
+            except ValueError:
+                rating = 5
+            if name and text:
+                Review.objects.create(name=name, text=text, rating=rating, is_published=False)
+                return redirect('/?review_sent=1#reviews')
+        else:
+            name = request.POST.get('name', '').strip()
+            phone = request.POST.get('phone', '').strip()
+            if name and phone:
+                Lead.objects.create(name=name, phone=phone)
+                return redirect('/?success=1')
+
+    reviews = Review.objects.filter(is_published=True).order_by('-created_at')
+    return render(request, 'web/index.html', {'reviews': reviews})
+
+def register_user(request, role='client'):
+    error = None
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        phone = request.POST.get('phone', '').strip()
+        password = request.POST.get('password', '')
+
+        if not username or not phone or not password:
+            error = 'Заполните все поля.'
+        elif User.objects.filter(username=username).exists():
+            error = 'Этот логин уже занят.'
+        else:
+            user = User.objects.create_user(username=username, password=password)
+            if role == 'partner':
+                Partner.objects.create(user=user, phone=phone, is_active=True)
+                login(request, user)
+                return redirect('partner_cabinet')
+            else:
+                user.first_name = phone
+                user.save()
+                login(request, user)
+                return redirect('cabinet')
+
+    return render(request, 'web/register.html', {'role': role, 'error': error})
 
 @login_required
 def cabinet(request):
@@ -22,6 +64,7 @@ def cabinet(request):
             ticket = form.save(commit=False)
             ticket.user = request.user
             ticket.client_name = request.user.username
+            ticket.phone = request.user.first_name
             ticket.save()
             return redirect('cabinet')
     else:
@@ -149,4 +192,11 @@ def review_ticket_admin(request, ticket_id):
             ticket.save()
 
     return redirect('manage_tickets')
+def blog_list(request):
+    posts = Post.objects.filter(is_published=True).order_by('-created_at')
+    return render(request, 'web/blog.html', {'posts': posts})
+
+def blog_detail(request, post_id):
+    post = get_object_or_404(Post, id=post_id, is_published=True)
+    return render(request, 'web/blog_detail.html', {'post': post})
 
