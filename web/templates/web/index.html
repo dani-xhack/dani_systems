@@ -16,7 +16,7 @@
                 <a href="{% if user.is_staff %}/manage/{% elif user.partner %}{% url 'partner_cabinet' %}{% else %}{% url 'cabinet' %}{% endif %}" class="btn" style="padding: 0.35rem 1rem; font-size: 0.85rem; margin: 0;">Кабинет</a>
             {% else %}
                 <a href="{% url 'login' %}" class="btn" style="padding: 0.35rem 1rem; font-size: 0.85rem; margin: 0;">Войти</a>
-            {% endif %}
+            {% endif %}           
         </nav>
     </header>
     <div class="site-wrapper">
@@ -144,9 +144,11 @@
         </section>
     </div>
 
-    <footer>
-        <p>&copy; 2026 Dani Systems. Все права защищены.</p>
+    <footer style="display: flex; flex-direction: column; align-items: center; gap: 0.6rem;">
+        <p style="margin: 0;">&copy; 2026 Dani Systems. Все права защищены.</p>
+        <a href="{% url 'teleport' %}" style="color: var(--accent); text-decoration: none; font-size: 0.9rem; opacity: 0.85;">&#127744; Телепорт из рутины</a>
     </footer>
+
       {% if request.GET.success %}
         <script>
          // Убираем ?success=1 из адресной строки без перезагрузки
