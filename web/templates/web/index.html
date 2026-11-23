@@ -2,160 +2,227 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dani Systems</title>
-    <link rel="stylesheet" href="{% static 'web/css/style.css' %}">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dani Systems — Перевод ИП и малого бизнеса на АУСН в 1С:Фреш</title>
+<link rel="stylesheet" href="{% static 'web/css/style.css' %}">
+<style>
+.pill-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:2rem;text-align:left}
+.pill{background:rgba(255,255,255,.04);border:1px solid var(--glass-border);border-radius:14px;padding:1rem 1.2rem}
+.pill b{color:var(--accent);display:block;margin-bottom:.3rem;font-size:.95rem}
+.pill span{font-size:.85rem;color:var(--text-muted);line-height:1.4;display:block}
+.step-num{display:inline-block;width:28px;height:28px;line-height:28px;text-align:center;border-radius:50%;background:var(--accent);color:var(--bg-page);font-weight:700;font-size:.85rem;margin-bottom:.6rem}
+details.faq-item{cursor:pointer;text-align:left}
+details.faq-item summary{font-weight:600;font-size:1.05rem;list-style:none;display:flex;justify-content:space-between;align-items:center}
+details.faq-item summary::-webkit-details-marker{display:none}
+details.faq-item summary::after{content:'+';color:var(--accent);font-size:1.3rem;font-weight:700}
+details.faq-item[open] summary::after{content:'−'}
+details.faq-item p{margin-top:.8rem;margin-bottom:0}
+</style>
 </head>
 <body>
-    <header style="display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: none; padding: 0.65rem 2rem; margin: 0; min-height: auto; box-sizing: border-box;">
-        <div class="logo" style="margin: 0; font-size: 1.35rem; line-height: 1;"><a href="/" style="color: inherit; text-decoration: none;">Dani Systems</a></div>
-        <nav style="display: flex; gap: 1.5rem; align-items: center;">
-            <a href="{% url 'blog_list' %}" style="color: #f8fafc; text-decoration: none; font-weight: 500; font-size: 0.95rem;">Блог</a>
-            {% if user.is_authenticated %}
-                <a href="{% if user.is_staff %}/manage/{% elif user.partner %}{% url 'partner_cabinet' %}{% else %}{% url 'cabinet' %}{% endif %}" class="btn" style="padding: 0.35rem 1rem; font-size: 0.85rem; margin: 0;">Кабинет</a>
-            {% else %}
-                <a href="{% url 'login' %}" class="btn" style="padding: 0.35rem 1rem; font-size: 0.85rem; margin: 0;">Войти</a>
-            {% endif %}           
-        </nav>
-    </header>
-    <div class="site-wrapper">
-        <main>
-            <h1>Учет для бизнеса на АУСН</h1>
-            <p>Без бухгалтера, серверов и головной боли.</p>
-            <a href="#contact" class="btn">Получить консультацию</a>
-        </main>
+<header style="display:flex;justify-content:space-between;align-items:center;width:100%;max-width:none;padding:.65rem 2rem;margin:0;min-height:auto;box-sizing:border-box;flex-wrap:wrap;gap:.8rem">
+<div class="logo" style="margin:0;font-size:1.35rem;line-height:1"><a href="/" style="color:inherit;text-decoration:none">Dani Systems</a></div>
+<nav style="display:flex;gap:1.3rem;align-items:center;flex-wrap:wrap">
+<a href="#services" style="color:var(--text-main);text-decoration:none;font-size:.95rem">Тарифы</a>
+<a href="#reviews" style="color:var(--text-main);text-decoration:none;font-size:.95rem">Отзывы</a>
+<a href="{% url 'blog_list' %}" style="color:var(--text-main);text-decoration:none;font-weight:500;font-size:.95rem">Блог</a>
+{% if user.is_authenticated %}
+<a href="{% if user.is_staff %}/manage/{% elif user.partner %}{% url 'partner_cabinet' %}{% else %}{% url 'cabinet' %}{% endif %}" class="btn" style="padding:.35rem 1rem;font-size:.85rem;margin:0">Кабинет</a>
+{% else %}
+<a href="{% url 'login' %}" class="btn" style="padding:.35rem 1rem;font-size:.85rem;margin:0">Войти</a>
+{% endif %}
+</nav>
+</header>
 
-        <section class="about">
-            <h2>Почему я?</h2>
-            <div class="about-content">
-                <p>Я не просто перепродаю облако. У меня есть диплом 1С-программиста.</p>
-                <p>Я сам настраиваю базы, пишу отчеты и решаю технические проблемы. Поэтому мой пакет поддержки — это помощь эксперта, а не чтение инструкций вслух.</p>
-            </div>
-        </section>
+<div class="site-wrapper">
+<main style="padding-bottom:2rem;background:radial-gradient(circle at 50% 0%,rgba(0,210,255,.12),transparent 65%)">
+<div style="margin-bottom:.8rem">
+<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/><path d="m9 13 2 2 4-4"/></svg>
+</div>
+<span style="display:inline-block;padding:.35rem .9rem;border-radius:20px;border:1px solid var(--accent);color:var(--accent);font-size:.82rem;font-weight:600;margin-bottom:1rem">Для малого бизнеса и ИП на АУСН по всей России</span>
+<h1 style="max-width:760px;margin:0 auto 1rem;line-height:1.2">Перевод ИП и малого бизнеса на АУСН в облако 1С:Фреш</h1>
+<p style="max-width:660px;margin:0 auto 1.8rem;color:var(--text-muted);font-size:1.05rem;line-height:1.6">Перенесу вашу базу в 1С:Фреш за 1 день, настрою учёт под режим АУСН и возьму на себя техническую поддержку — без покупки серверов, сисадмина и головной боли.</p>
+<div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+<a href="#contact" class="btn">Получить консультацию</a>
+<a href="#services" class="btn" style="background:rgba(255,255,255,.06);border:1px solid var(--glass-border);box-shadow:none">Посмотреть тарифы</a>
+</div>
 
-        <section class="services">
-            <h2>Наши услуги</h2>
-            <div class="services-grid">
-                <div class="service-card">
-                    <h3>Пакет «Старт»</h3>
-                    <p>Быстрый и безопасный переезд в облако 1С:Фреш.</p>
-                    <ul>
-                        <li>Перенос базы</li>
-                        <li>Настройка доступа</li>
-                        <li>1 месяц консультаций</li>
-                    </ul>
-                </div>
-                <div class="service-card">
-                    <h3>Пакет «Комфорт»</h3>
-                    <p>Забудьте о технических проблемах.</p>
-                    <ul>
-                        <li>Поддержка до 10 часов/мес</li>
-                        <li>Мелкие доработки</li>
-                        <li>Срочная помощь</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
+<div class="pill-grid">
+<div class="pill"><b>Дипломированный 1С-специалист</b><span>Решаю задачи сам или через проверенных инженеров, без скриптов первой линии.</span></div>
+<div class="pill"><b>Работа в браузере 24/7</b><span>1С:Фреш работает с любого компьютера — не нужен сервер в офисе и ручные бэкапы.</span></div>
+<div class="pill"><b>Прозрачный личный кабинет</b><span>Контроль статусов задач и остатка часов пакета в реальном времени.</span></div>
+</div>
+</main>
 
-        <section class="faq">
-            <h2>Частые вопросы</h2>
-            <div class="faq-item">
-                <h3>Можно ли перенести мою базу в облако?</h3>
-                <p>Да, перенесем всё: справочники, документы, настройки. Ошибки при переносе могут стоить недель восстановления, поэтому лучше доверить это специалисту.</p>
-            </div>
-            <div class="faq-item">
-                <h3>А если у нас пропадет интернет?</h3>
-                <p>1С:Фреш работает в браузере. Я могу настроить автономное рабочее место (АРМ), чтобы вы могли работать даже при обрывах связи.</p>
-            </div>
-            <div class="faq-item">
-                <h3>Сложно ли бухгалтеру переучиваться?</h3>
-                <p>Интерфейс тот же, что и в обычной 1С. Я проведу первичное обучение и буду на связи в первый месяц.</p>
-            </div>
-        </section>
+<section class="about">
+<h2>Почему Dani Systems?</h2>
+<div class="about-content">
+<p>Я не просто перепродаю облачные тарифы — у меня профильный диплом 1С-программиста и практический опыт сопровождения малого бизнеса и ИП.</p>
+<p>Сам настраиваю базы в 1С:Фреш под АУСН и пишу отчёты. Поэтому мой пакет поддержки — это реальная инженерная помощь, а не чтение инструкций вслух.</p>
+</div>
+</section>
 
-        <section id="reviews" class="reviews" style="margin-top: 3rem;">
-            <h2>Отзывы клиентов</h2>
+<section id="services" class="services">
+<h2>Тарифы и услуги</h2>
+<div class="services-grid">
+<div class="service-card" style="display:flex;flex-direction:column;justify-content:space-between">
+<div>
+<h3>Пакет «Старт»</h3>
+<p style="color:var(--accent);font-weight:700;font-size:1.25rem;margin:.5rem 0">от 4 500 ₽</p>
+<p style="font-size:.9rem;color:var(--text-muted)">Быстрое подключение ИП и малого бизнеса на АУСН к 1С:Фреш.</p>
+<ul style="text-align:left;margin:1rem 0">
+<li>Регистрация и настройка рабочей базы в 1С:Фреш</li>
+<li>Перенос текущей базы и справочников без потери данных</li>
+<li>Настройка прав доступа пользователей</li>
+<li>1 месяц стартовых консультаций</li>
+</ul>
+</div>
+<a href="?plan=start#contact" class="btn" style="margin-top:1rem" onclick="setPlan('Пакет «Старт»')">Заказать «Старт»</a>
+</div>
 
-            {% if request.GET.review_sent %}
-                <p style="color: #4ade80; text-align: center; margin-bottom: 1.5rem; font-weight: 600;">
-                    Спасибо! Ваш отзыв отправлен и появится на сайте после проверки модератором.
-                </p>
-            {% endif %}
+<div class="service-card" style="display:flex;flex-direction:column;justify-content:space-between;border-color:var(--accent)">
+<div>
+<h3>Пакет «Комфорт»</h3>
+<p style="color:var(--accent);font-weight:700;font-size:1.25rem;margin:.5rem 0">от 7 500 ₽ / мес</p>
+<p style="font-size:.9rem;color:var(--text-muted)">5 часов (300 минут) персональной поддержки и консультаций специалиста.</p>
+<ul style="text-align:left;margin:1rem 0">
+<li>5 часов консультаций и технической помощи в месяц</li>
+<li>Настройка отчётов, печатных форм и регламентных операций</li>
+<li>Личный кабинет с прозрачным учётом затраченных минут</li>
+<li>Приоритетная реакция на срочные вопросы</li>
+</ul>
+</div>
+<a href="?plan=comfort#contact" class="btn" style="margin-top:1rem" onclick="setPlan('Пакет «Комфорт»')">Выбрать «Комфорт»</a>
+</div>
+</div>
 
-            {% if reviews %}
-                <div style="position: relative; max-width: 900px; margin: 0 auto 2.5rem;">
-                    <div id="rev-track" style="display: flex; gap: 1.2rem; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding-bottom: 0.5rem;">
-                        {% for r in reviews|slice:":4" %}
-                            <div class="service-card" style="min-width: 280px; flex: 1 0 46%; scroll-snap-align: start; text-align: left; margin: 0;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                                    <strong style="font-size: 1.05rem;">{{ r.name }}</strong>
-                                    <span style="color: #fbbf24; letter-spacing: 2px;">
-                                        {% if r.rating == 5 %}★★★★★{% elif r.rating == 4 %}★★★★☆{% elif r.rating == 3 %}★★★☆☆{% elif r.rating == 2 %}★★☆☆☆{% else %}★☆☆☆☆{% endif %}
-                                    </span>
-                                </div>
-                                <p style="font-size: 0.95rem; line-height: 1.5; margin-bottom: 0.75rem;">{{ r.text }}</p>
-                                <small style="color: var(--text-muted);">{{ r.created_at|date:"d.m.Y" }}</small>
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 0.8rem;">
-                        <button type="button" class="btn" onclick="document.getElementById('rev-track').scrollBy({left: -320, behavior: 'smooth'})" style="padding: 0.4rem 1.1rem; font-size: 1.1rem;">‹</button>
-                        <button type="button" class="btn" onclick="document.getElementById('rev-track').scrollBy({left: 320, behavior: 'smooth'})" style="padding: 0.4rem 1.1rem; font-size: 1.1rem;">›</button>
-                    </div>
-                </div>
-            {% else %}
-                <p style="color: var(--text-muted); text-align: center; margin-bottom: 2rem;">Пока нет опубликованных отзывов — станьте первым!</p>
-            {% endif %}
+<div class="service-card" style="max-width:780px;margin:1.5rem auto 0;padding:1.2rem 1.5rem;text-align:left;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+<div>
+<strong style="color:var(--accent);font-size:1.05rem">Дополнительная услуга: Настройка обмена с банками</strong>
+<p style="font-size:.9rem;color:var(--text-muted);margin:.3rem 0 0">Подключение и отладка обмена 1С:Фреш с расчётными счетами (ДиректБанк / выписки для АУСН) — оформляется отдельно по запросу.</p>
+</div>
+<span style="font-weight:700;color:var(--accent);white-space:nowrap">от 2 500 ₽</span>
+</div>
+</section>
+<section style="margin:3rem auto;max-width:1000px">
+<h2>Как мы работаем</h2>
+<div class="pill-grid">
+<div class="service-card" style="margin:0;text-align:left"><span class="step-num">1</span><h3>Заявка и аудит</h3><p style="font-size:.9rem;color:var(--text-muted)">Созваниваемся или списываемся в MAX, проверяем параметры вашего ИП или ООО на АУСН и подбираем тариф 1С:Фреш.</p></div>
+<div class="service-card" style="margin:0;text-align:left"><span class="step-num">2</span><h3>Подключение за 1 день</h3><p style="font-size:.9rem;color:var(--text-muted)">Создаю рабочую базу в облаке 1С:Фреш, переношу справочники и остатки, настраиваю права доступа.</p></div>
+<div class="service-card" style="margin:0;text-align:left"><span class="step-num">3</span><h3>Обучение и старт</h3><p style="font-size:.9rem;color:var(--text-muted)">Показываю ключевые разделы для работы на АУСН и выдаю доступ в ваш личный кабинет поддержки.</p></div>
+<div class="service-card" style="margin:0;text-align:left"><span class="step-num">4</span><h3>Поддержка по пакету</h3><p style="font-size:.9rem;color:var(--text-muted)">Создаёте обращение в личном кабинете — видите статус, ответ специалиста и остаток из 5 часов пакета.</p></div>
+</div>
+</section>
 
-            <div class="service-card" style="max-width: 520px; margin: 0 auto; text-align: left;">
-                <h3 style="margin-bottom: 1rem; text-align: center; color: var(--accent);">Оставить отзыв</h3>
-                <form method="POST" class="contact-form" style="margin: 0 auto; max-width: 100%;">
-                    {% csrf_token %}
-                    <input type="hidden" name="form_type" value="review">
-                    <input type="text" name="name" placeholder="Ваше имя или компания" required>
-                    <select name="rating" style="width: 100%; padding: 0.9rem 1.2rem; border-radius: 15px; border: 1px solid var(--glass-border); background: rgba(15, 23, 42, 0.8); color: #fff; font-family: inherit; font-size: 1rem;">
-                        <option value="5">Оценка: ★★★★★ (5 из 5)</option>
-                        <option value="4">Оценка: ★★★★☆ (4 из 5)</option>
-                        <option value="3">Оценка: ★★★☆☆ (3 из 5)</option>
-                        <option value="2">Оценка: ★★☆☆☆ (2 из 5)</option>
-                        <option value="1">Оценка: ★☆☆☆☆ (1 из 5)</option>
-                    </select>
-                    <textarea name="text" rows="3" placeholder="Напишите пару слов о нашей работе..." required style="width: 100%; padding: 0.9rem 1.2rem; border-radius: 15px; border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.08); color: #fff; font-family: inherit; font-size: 1rem;"></textarea>
-                    <button type="submit" class="btn">Отправить отзыв</button>
-                </form>
-            </div>
-        </section>
+<section class="faq">
+<h2>Частые вопросы</h2>
+<details class="faq-item">
+<summary>Можно ли перенести мою старую базу в 1С:Фреш?</summary>
+<p>Да, перенесём справочники, документы, настройки и историю. Ошибки при самостоятельном переносе могут стоить недель восстановления, поэтому лучше доверить это специалисту.</p>
+</details>
+<details class="faq-item">
+<summary>Входит ли обмен с банками в базовый пакет?</summary>
+<p>Нет, настройка интеграции и обмена выписками с расчётными счетами банков для АУСН оформляется как отдельная платная услуга (от 2 500 ₽) под ваш конкретный банк.</p>
+</details>
+<details class="faq-item">
+<summary>А если в офисе или дома пропадёт интернет?</summary>
+<p>1С:Фреш работает в любом браузере даже с мобильного интернета. При необходимости я настрою автономное рабочее место (АРМ), чтобы вы могли работать даже при обрывах связи.</p>
+</details>
+<details class="faq-item">
+<summary>Сложно ли бухгалтеру или руководителю переучиваться?</summary>
+<p>Интерфейс точно такой же, как в привычной коробочной 1С. Я проведу первичное обучение и буду на связи в рамках пакета консультаций.</p>
+</details>
+</section>
 
-        <section id="contact" class="contact">
-            <h2>Остались вопросы?</h2>
-            {% if request.GET.success %}
-                <p style="color: var(--accent); font-weight: bold; margin-bottom: 1rem;">Спасибо! Ваша заявка отправлена. Я свяжусь с вами в ближайшее время.</p>
-            {% endif %}
-            <form method="POST" class="contact-form">
-                {% csrf_token %}
-                <input type="text" name="name" placeholder="Ваше имя" required>
-                <input type="tel" name="phone" placeholder="Телефон или MAX" required>
-                <button type="submit" class="btn">Отправить</button>
-            </form>
+<section id="reviews" class="reviews" style="margin-top:3rem">
+<h2>Отзывы клиентов</h2>
+{% if request.GET.review_sent %}
+<p style="color:#4ade80;text-align:center;margin-bottom:1.5rem;font-weight:600">Спасибо! Ваш отзыв отправлен и появится на сайте после проверки модератором.</p>
+{% endif %}
+{% if reviews %}
+<div style="position:relative;max-width:900px;margin:0 auto 2.5rem">
+<div id="rev-track" style="display:flex;gap:1.2rem;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding-bottom:.5rem">
+{% for r in reviews|slice:":4" %}
+<div class="service-card" style="min-width:280px;flex:1 0 46%;scroll-snap-align:start;text-align:left;margin:0">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
+<strong style="font-size:1.05rem">{{ r.name }}</strong>
+<span style="color:#fbbf24;letter-spacing:2px">{% if r.rating == 5 %}★★★★★{% elif r.rating == 4 %}★★★★☆{% elif r.rating == 3 %}★★★☆☆{% elif r.rating == 2 %}★★☆☆☆{% else %}★☆☆☆☆{% endif %}</span>
+</div>
+<p style="font-size:.95rem;line-height:1.5;margin-bottom:.75rem">{{ r.text }}</p>
+<small style="color:var(--text-muted)">{{ r.created_at|date:"d.m.Y" }}</small>
+</div>
+{% endfor %}
+</div>
+<div style="display:flex;justify-content:center;gap:1rem;margin-top:.8rem">
+<button type="button" class="btn" onclick="document.getElementById('rev-track').scrollBy({left:-320,behavior:'smooth'})" style="padding:.4rem 1.1rem;font-size:1.1rem">‹</button>
+<button type="button" class="btn" onclick="document.getElementById('rev-track').scrollBy({left:320,behavior:'smooth'})" style="padding:.4rem 1.1rem;font-size:1.1rem">›</button>
+</div>
+</div>
+{% else %}
+<p style="color:var(--text-muted);text-align:center;margin-bottom:2rem">Пока нет опубликованных отзывов — станьте первым!</p>
+{% endif %}
 
-            <p>Или напишите мне сразу:</p>
-            <a href="https://max.ru/" target="_blank" class="btn">Написать в MAX</a>
-        </section>
-    </div>
+<div class="service-card" style="max-width:520px;margin:0 auto;text-align:left">
+<h3 style="margin-bottom:1rem;text-align:center;color:var(--accent)">Оставить отзыв</h3>
+<form method="POST" class="contact-form" style="margin:0 auto;max-width:100%">
+{% csrf_token %}
+<input type="hidden" name="form_type" value="review">
+<input type="text" name="name" placeholder="Ваше имя или компания" required>
+<select name="rating" style="width:100%;padding:.9rem 1.2rem;border-radius:15px;border:1px solid var(--glass-border);background:rgba(15,23,42,.8);color:#fff;font-family:inherit;font-size:1rem">
+<option value="5">Оценка: ★★★★★ (5 из 5)</option>
+<option value="4">Оценка: ★★★★☆ (4 из 5)</option>
+<option value="3">Оценка: ★★★☆☆ (3 из 5)</option>
+<option value="2">Оценка: ★★☆☆☆ (2 из 5)</option>
+<option value="1">Оценка: ★☆☆☆☆ (1 из 5)</option>
+</select>
+<textarea name="text" rows="3" placeholder="Напишите пару слов о нашей работе..." required style="width:100%;padding:.9rem 1.2rem;border-radius:15px;border:1px solid var(--glass-border);background:rgba(255,255,255,.08);color:#fff;font-family:inherit;font-size:1rem"></textarea>
+<button type="submit" class="btn">Отправить отзыв</button>
+</form>
+</div>
+</section>
 
-    <footer style="display: flex; flex-direction: column; align-items: center; gap: 0.6rem;">
-        <p style="margin: 0;">&copy; 2026 Dani Systems. Все права защищены.</p>
-        <a href="{% url 'teleport' %}" style="color: var(--accent); text-decoration: none; font-size: 0.9rem; opacity: 0.85;">&#127744; Телепорт из рутины</a>
-    </footer>
+<section id="contact" class="contact">
+<h2>Готовы подключить 1С:Фреш на АУСН?</h2>
+<p style="color:var(--text-muted);margin-bottom:1.2rem">Оставьте контакты — разберу вашу задачу и подберу решение без навязывания лишних услуг.</p>
+{% if request.GET.success %}
+<p style="color:var(--accent);font-weight:bold;margin-bottom:1rem">Спасибо! Ваша заявка отправлена. Я свяжусь с вами в ближайшее время.</p>
+{% endif %}
+<form method="POST" class="contact-form">
+{% csrf_token %}
+<input type="text" name="name" placeholder="Ваше имя" required>
+<input type="tel" name="phone" placeholder="Телефон или MAX" required>
+<button type="submit" class="btn">Получить консультацию</button>
+</form>
+<p style="margin-top:1rem">Или напишите мне напрямую:</p>
+<a href="https://max.ru" target="_blank" class="btn">Написать в MAX</a>
+</section>
+</div>
 
-      {% if request.GET.success %}
-        <script>
-         // Убираем ?success=1 из адресной строки без перезагрузки
-         if (window.history.replaceState) {
-         window.history.replaceState(null, null, window.location.pathname);
-              }
-        </script>
-      {% endif %}
-</body>
-</html>
+<footer style="display:flex;flex-direction:column;align-items:center;gap:.6rem">
+<p style="margin:0">&copy; 2026 Dani Systems. Все права защищены.</p>
+<a href="{% url 'teleport' %}" style="color:var(--accent);text-decoration:none;font-size:.9rem">Телепорт</a>
+</footer>
+
+<script>
+let selPlan='';
+function setPlan(p){
+    selPlan=p;
+    let tag=document.getElementById('plan-tag');
+    if(!tag){
+        tag=document.createElement('p');
+        tag.id='plan-tag';
+        tag.style.cssText='color:var(--accent);font-weight:600;margin-bottom:.8rem;font-size:.95rem';
+        document.querySelector('#contact form').prepend(tag);
+    }
+    tag.textContent='Выбранный тариф: '+p;
+}
+const qp=new URLSearchParams(location.search).get('plan');
+if(qp==='start')setPlan('Пакет «Старт»');
+if(qp==='comfort')setPlan('Пакет «Комфорт»');
+document.querySelector('#contact form').addEventListener('submit',function(){
+    if(selPlan){const n=this.querySelector('input[name="name"]');if(n&&!n.value.includes('['))n.value+=' ['+selPlan+']';}
+});
+if(window.history.replaceState&&(location.search.includes('success')||location.search.includes('review_sent')))window.history.replaceState(null,null,window.location.pathname);
+</script>
+</body></html>
+
