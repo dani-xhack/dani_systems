@@ -26,6 +26,7 @@ details.faq-item p{margin-top:.8rem;margin-bottom:0}
 <a href="#services" style="color:var(--text-main);text-decoration:none;font-size:.95rem">Тарифы</a>
 <a href="#reviews" style="color:var(--text-main);text-decoration:none;font-size:.95rem">Отзывы</a>
 <a href="{% url 'blog_list' %}" style="color:var(--text-main);text-decoration:none;font-weight:500;font-size:.95rem">Блог</a>
+<a href="https://max.ru/se15078768_1_bot" target="_blank" style="color:var(--accent);text-decoration:none;font-weight:500;font-size:.95rem">Написать в MAX</a>
 {% if user.is_authenticated %}
 <a href="{% if user.is_staff %}/manage/{% elif user.partner %}{% url 'partner_cabinet' %}{% else %}{% url 'cabinet' %}{% endif %}" class="btn" style="padding:.35rem 1rem;font-size:.85rem;margin:0">Кабинет</a>
 {% else %}
@@ -193,8 +194,7 @@ details.faq-item p{margin-top:.8rem;margin-bottom:0}
 <input type="tel" name="phone" placeholder="Телефон или MAX" required>
 <button type="submit" class="btn">Получить консультацию</button>
 </form>
-<p style="margin-top:1rem">Или напишите мне напрямую:</p>
-<a href="https://max.ru" target="_blank" class="btn">Написать в MAX</a>
+
 </section>
 </div>
 

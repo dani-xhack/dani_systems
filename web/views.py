@@ -1,3 +1,4 @@
+from .max_notify import send_max_lead
 from .models import Lead, Ticket, Partner, Review, Post
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -23,7 +24,7 @@ def index(request):
             name = request.POST.get('name', '').strip()
             phone = request.POST.get('phone', '').strip()
             if name and phone:
-                Lead.objects.create(name=name, phone=phone)
+                Lead.objects.create(name=name, phone=phone); send_max_lead(name, phone)
                 return redirect('/?success=1')
 
     reviews = Review.objects.filter(is_published=True).order_by('-created_at')
@@ -144,12 +145,10 @@ def manage_tickets(request):
     review_tickets = Ticket.objects.filter(status='on_review').order_by('-created_at')
     all_tickets = Ticket.objects.all().order_by('-created_at')
     partners = Partner.objects.filter(is_active=True)
-    leads = Lead.objects.filter(is_processed=False).order_by('-created_at')
     return render(request, 'web/manage_tickets.html', {
         'review_tickets': review_tickets,
         'tickets': all_tickets,
         'partners': partners,
-        'leads': leads,
     })
 
 def update_ticket_admin(request, ticket_id):
