@@ -192,6 +192,10 @@ details.faq-item p{margin-top:.8rem;margin-bottom:0}
 {% csrf_token %}
 <input type="text" name="name" placeholder="Ваше имя" required>
 <input type="tel" name="phone" placeholder="Телефон или MAX" required>
+<label style="display:flex;align-items:flex-start;gap:.6rem;text-align:left;font-size:.82rem;color:var(--text-muted);line-height:1.35;margin:.2rem 0 .4rem">
+<input type="checkbox" name="agree_pdn" required style="width:16px;height:16px;margin-top:2px;accent-color:var(--accent);cursor:pointer;flex-shrink:0">
+<span>Даю согласие на обработку моих персональных данных в соответствии с ФЗ-152 для связи и консультации.</span>
+</label>
 <button type="submit" class="btn">Получить консультацию</button>
 </form>
 

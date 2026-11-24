@@ -1,3 +1,4 @@
+from django.utils import timezone
 from .max_notify import send_max_lead
 from .models import Lead, Ticket, Partner, Review, Post
 from django.shortcuts import render, redirect, get_object_or_404
@@ -39,12 +40,16 @@ def register_user(request, role='client'):
 
         if not username or not phone or not password:
             error = 'Заполните все поля.'
+        elif role != 'partner' and request.POST.get('agree_pdn') != 'on':
+            error = 'Необходимо дать согласие на обработку персональных данных (152-ФЗ).'
+        elif role == 'partner' and request.POST.get('agree_offer') != 'on':
+            error = 'Необходимо принять условия партнёрской оферты.'
         elif User.objects.filter(username=username).exists():
             error = 'Этот логин уже занят.'
         else:
             user = User.objects.create_user(username=username, password=password)
             if role == 'partner':
-                Partner.objects.create(user=user, phone=phone, is_active=True)
+                Partner.objects.create(user=user, phone=phone, is_active=True, offer_accepted_at=timezone.now())
                 login(request, user)
                 return redirect('partner_cabinet')
             else:

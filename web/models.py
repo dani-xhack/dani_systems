@@ -5,6 +5,7 @@ class Partner(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="Пользователь")
     phone = models.CharField(max_length=20, verbose_name="Телефон")
     is_active = models.BooleanField(default=True, verbose_name="Активен")
+    offer_accepted_at = models.DateTimeField(null=True, blank=True, verbose_name="Оферта принята")
 
     def __str__(self):
         return f"{self.user.get_full_name() or self.user.username} ({self.phone})"

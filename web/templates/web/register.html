@@ -5,14 +5,28 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{% if role == 'partner' %}Регистрация партнёра{% else %}Регистрация клиента{% endif %} | Dani Systems</title>
 <link rel="stylesheet" href="{% static 'web/css/style.css' %}">
+<style>
+.offer-row{display:flex;align-items:flex-start;gap:.65rem;text-align:left;font-size:.86rem;color:var(--text-muted);line-height:1.4;margin:.3rem 0 .6rem}
+.offer-row input{width:18px;height:18px;margin-top:2px;accent-color:var(--accent);cursor:pointer;flex-shrink:0}
+.offer-link{color:var(--accent);text-decoration:underline;cursor:pointer;background:none;border:none;padding:0;font:inherit}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(2,6,23,.82);backdrop-filter:blur(6px);z-index:1000;justify-content:center;align-items:center;padding:1rem}
+.modal-box{background:#0f172a;border:1px solid var(--accent);border-radius:20px;max-width:680px;width:100%;max-height:84vh;display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(0,0,0,.6)}
+.modal-head{padding:1.2rem 1.5rem;border-bottom:1px solid var(--glass-border);display:flex;justify-content:space-between;align-items:center}
+.modal-body{padding:1.3rem 1.5rem;overflow-y:auto;text-align:left;font-size:.9rem;line-height:1.6;color:var(--text-main)}
+.modal-body h4{color:var(--accent);margin:1.1rem 0 .4rem;font-size:1rem}
+.modal-body h4:first-child{margin-top:0}
+.modal-foot{padding:1rem 1.5rem;border-top:1px solid var(--glass-border);display:flex;justify-content:flex-end;gap:.8rem}
+</style>
 </head>
 <body>
-<header><div class="logo">Dani Systems</div></header>
+<header><div class="logo"><a href="/" style="color:inherit;text-decoration:none">Dani Systems</a></div></header>
 
 <div class="site-wrapper" style="display:flex;justify-content:center;align-items:center;min-height:75vh">
-<main style="width:100%;max-width:420px;min-height:auto;padding:2.5rem 2rem">
+<main style="width:100%;max-width:440px;min-height:auto;padding:2.5rem 2rem">
 <h2 style="margin-bottom:.5rem">{% if role == 'partner' %}Регистрация партнёра{% else %}Регистрация клиента{% endif %}</h2>
-<p style="font-size:.9rem;color:var(--text-muted);margin-bottom:1.5rem">Создайте аккаунт для доступа в личный кабинет</p>
+<p style="font-size:.9rem;color:var(--text-muted);margin-bottom:1.5rem">
+{% if role == 'partner' %}Сотрудничество для действующих ИП и самозанятых (НПД){% else %}Создайте аккаунт для доступа в личный кабинет{% endif %}
+</p>
 
 {% if error %}
 <p style="color:#ff6b6b;text-align:center;margin-bottom:1rem;font-size:.9rem">{{ error }}</p>
@@ -21,8 +35,21 @@
 <form method="post" class="contact-form" style="margin:0 auto">
 {% csrf_token %}
 <input type="text" name="username" placeholder="Придумайте логин" required>
-<input type="tel" name="phone" placeholder="Ваш телефон" required>
+<input type="tel" name="phone" placeholder="Ваш телефон или MAX" required>
 <input type="password" name="password" placeholder="Придумайте пароль" required>
+
+{% if role == 'partner' %}
+<label class="offer-row">
+<input type="checkbox" name="agree_offer" id="agree_offer" required>
+<span>Подтверждаю статус ИП или самозанятого, даю согласие на обработку персональных данных (152-ФЗ) и принимаю условия <button type="button" class="offer-link" onclick="openOffer()">партнёрской оферты Dani Systems</button> (80% / 20%).</span>
+</label>
+{% else %}
+<label class="offer-row">
+<input type="checkbox" name="agree_pdn" required>
+<span>Даю согласие на обработку моих персональных данных в соответствии с ФЗ-152 для регистрации и работы в личном кабинете.</span>
+</label>
+{% endif %}
+
 <button type="submit" class="btn">Зарегистрироваться</button>
 </form>
 
@@ -31,8 +58,67 @@
 </p>
 </main>
 </div>
+{% if role == 'partner' %}
+<div id="offer-modal" class="modal-bg" onclick="if(event.target===this)closeOffer()">
+<div class="modal-box">
+<div class="modal-head">
+<div>
+<h3 style="margin:0;color:var(--accent);font-size:1.15rem">Партнёрская оферта Dani Systems</h3>
+<span style="font-size:.78rem;color:var(--text-muted)">Редакция от 24.11.2026</span>
+</div>
+<button type="button" onclick="closeOffer()" style="background:none;border:none;color:var(--text-muted);font-size:1.4rem;cursor:pointer">&times;</button>
+</div>
+<div class="modal-body">
+<h4>1. Предмет соглашения и статус Партнёра</h4>
+<p>1.1. Настоящая оферта является договором возмездного оказания услуг (ГПХ) и определяет порядок сотрудничества между платформой <b>Dani Systems</b> (далее — Платформа) и независимым специалистом 1С (далее — Партнёр) при выполнении заявок клиентов в облаке 1С:Фреш и смежных сервисах.<br>
+1.2. <b>Статус Партнёра:</b> Партнёром Платформы может выступать исключительно действующий <b>Индивидуальный предприниматель (ИП)</b> либо физическое лицо, применяющее специальный налоговый режим <b>«Налог на профессиональный доход» (самозанятый)</b>. С обычными физлицами без статуса ИП или плательщика НПД Платформа не работает.</p>
 
-<footer><p>&copy; 2026 Dani Systems. Все права защищены.</p></footer>
+<h4>2. Финансовые условия, порядок и сроки выплат (80% / 20%)</h4>
+<p>2.1. Вознаграждение за каждую успешно выполненную и принятую заявку распределяется следующим образом:</p>
+<ul>
+<li><b>80% (восемьдесят процентов)</b> от стоимости оказанных услуг составляет вознаграждение <b>Партнёра</b>;</li>
+<li><b>20% (двадцать процентов)</b> составляет комиссия <b>Платформы Dani Systems</b> за привлечение клиента, первичную обработку заявки, инфраструктуру личного кабинета и контроль качества.</li>
+</ul>
+<p>2.2. <b>Периодичность и порядок выплат:</b> Выплата вознаграждения Партнёру производится <b>два раза в месяц (15-го числа и в последний рабочий день месяца)</b> на основании сформированного реестра закрытых заявок за расчётный период:<br>
+— <b>для ИП:</b> выплата производится при условии подписания Акта оказанных услуг (в том числе по ЭДО) безналичным переводом с расчётного счёта Платформы на расчётный счёт ИП Партнёра;<br>
+— <b>для самозанятых (НПД):</b> выплата производится при условии формирования и передачи Платформе электронного чека из приложения «Мой налог» на общую сумму реестра, безналичным переводом с расчётного счёта Платформы на банковский счёт (карту) Партнёра.<br>
+2.3. <b>Налоговая ответственность и порядок возмещения:</b> Партнёр самостоятельно отслеживает лимиты своего налогового режима и уплачивает налоги. В случае утраты статуса самозанятого (ИП) до выплаты либо необоснованного аннулирования чека «Мой налог» Партнёр обязуется уведомить Платформу в течение 24 часов и компенсировать Платформе все документально подтверждённые налоговые доначисления, пени и штрафы. Платформа вправе удержать сумму такой компенсации из любых будущих выплат Партнёру либо потребовать прямого возврата средств на расчётный счёт Платформы в течение <b>5 (пяти) рабочих дней</b> с момента направления требования.</p>
+
+<h4>3. Сроки принятия в работу и контроль качества</h4>
+<p>3.1. <b>Срок реакции:</b> Партнёр обязуется взять назначенную заявку в работу в личном кабинете в течение <b>4 (четырёх) рабочих часов</b> с момента назначения. При отсутствии реакции без уважительной причины Платформа вправе передать заявку другому специалисту.<br>
+3.2. <b>Сдача работ:</b> По завершении задачи Партнёр фиксирует фактически затраченное время (в минутах) и переводит заявку в статус <b>«На проверке»</b>.<br>
+3.3. <b>Гарантия качества и доработка:</b> Если клиент или администратор Платформы выявил недочёты и вернул заявку на доработку, Партнёр обязуется устранить замечания <b>бесплатно в течение 2 (двух) рабочих дней</b>. В случае отказа от доработки или срыва срока Платформа вправе передать заявку другому специалисту, при этом вознаграждение первому Партнёру за данную заявку <b>не начисляется и не выплачивается</b>.</p>
+
+<h4>4. Конфиденциальность, запрет увода клиентов и ответственность</h4>
+<p>4.1. Партнёр обязуется соблюдать строгую конфиденциальность в отношении баз данных, реквизитов и коммерческой информации клиентов Платформы.<br>
+4.2. Партнёру категорически запрещается предлагать клиентам Платформы прямые расчёты, заключать с ними договоры напрямую или переманивать их в обход Dani Systems.<br>
+4.3. <b>Штрафные санкции и убытки:</b> В случае выявления факта увода клиента, попытки прямых расчётов в обход Платформы или разглашения конфиденциальных данных Партнёр обязуется выплатить Платформе штраф в размере <b>50 000 (пятидесяти тысяч) рублей</b> за каждый выявленный случай, а также полностью лишается права на получение невыплаченного вознаграждения по текущим заявкам. Платформа вправе также потребовать возмещения убытков сверх суммы штрафа и взыскать задолженность в судебном порядке в случае отказа от добровольной оплаты. Аккаунт Партнёра блокируется без права восстановления.</p>
+
+<h4>5. Форс-мажор (обстоятельства непреодолимой силы)</h4>
+<p>5.1. Стороны освобождаются от ответственности за частичное или полное неисполнение обязательств по настоящей оферте, если оно вызвано обстоятельствами непреодолимой силы (стихийные бедствия, военные действия, сбои магистральных каналов связи, запретительные акты органов государственной власти и т.п.), возникшими после акцепта оферты.</p>
+
+<h4>6. Изменение условий и разрешение споров</h4>
+<p>6.1. <b>Изменение оферты:</b> Платформа вправе вносить изменения в настоящую оферту в одностороннем порядке. Изменения вступают в силу с момента их публикации на сайте Dani Systems. Продолжение работы Партнёра после публикации изменений означает его полное согласие с новой редакцией.<br>
+6.2. <b>Разрешение споров:</b> Все споры и разногласия решаются путём переговоров. При недостижении согласия спор передаётся на рассмотрение в суд по месту нахождения Платформы.</p>
+
+<h4>7. Акцепт оферты и реквизиты Платформы</h4>
+<p>7.1. Установка отметки в поле согласия при регистрации на сайте Dani Systems означает полное и безоговорочное принятие Партнёром всех условий настоящей оферты, согласие на обработку персональных данных (152-ФЗ) и подтверждение действующего статуса ИП или плательщика НПД. Оферта вступает в силу с момента акцепта и действует бессрочно до расторжения одной из сторон.<br>
+7.2. <b>Реквизиты Платформы:</b> {{ platform_requisites }}</p>
+</div>
+<div class="modal-foot">
+<button type="button" class="btn" style="margin:0;background:rgba(255,255,255,.08);border:1px solid var(--glass-border);box-shadow:none" onclick="closeOffer()">Закрыть</button>
+<button type="button" class="btn" style="margin:0" onclick="acceptOffer()">Принять условия</button>
+</div>
+</div>
+</div>
+<script>
+function openOffer(){document.getElementById('offer-modal').style.display='flex';}
+function closeOffer(){document.getElementById('offer-modal').style.display='none';}
+function acceptOffer(){document.getElementById('agree_offer').checked=true;closeOffer();}
+</script>
+{% endif %}
+
+<footer><p>&copy; 2026 {{ platform_requisites }}. Все права защищены.</p></footer>
 </body>
 </html>
 
