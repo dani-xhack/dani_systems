@@ -17,7 +17,9 @@ class Partner(models.Model):
 
 class Post(models.Model):
     title = models.CharField(max_length=200, verbose_name="Заголовок")
-    text = models.TextField(verbose_name="Текст статьи")
+    text = models.TextField(verbose_name="Текст статьи (используйте ## для заголовков H2 и ### для H3)")
+    meta_description = models.CharField(max_length=255, blank=True, verbose_name="SEO описание (Description)", help_text="Если оставить пустым, заполнится автоматически из начала статьи")
+    keywords = models.CharField(max_length=255, blank=True, verbose_name="SEO-теги (через запятую)", help_text="Например: АУСН, 1С:Фреш, бухгалтерия ИП")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата публикации")
     is_published = models.BooleanField(default=False, verbose_name="Опубликовано")
 

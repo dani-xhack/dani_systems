@@ -18,7 +18,8 @@ class PartnerAdmin(admin.ModelAdmin):
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'created_at', 'is_published')
+    list_display = ('title', 'keywords', 'created_at', 'is_published')
+    list_editable = ('is_published',)
     list_filter = ('is_published',)
     search_fields = ('title', 'text')
 
