@@ -107,3 +107,10 @@ class Lead(models.Model):
         verbose_name = "Заявка (с сайта)"
         verbose_name_plural = "Заявки (с сайта)"
 
+
+
+class HexJoke(Joke):
+    class Meta:
+        proxy = True
+        verbose_name = "Анекдот (HEX)"
+        verbose_name_plural = "Анекдоты (HEX)"

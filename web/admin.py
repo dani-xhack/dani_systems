@@ -1,6 +1,7 @@
+import re
 from django.contrib import admin
 from django.shortcuts import redirect
-from .models import Partner, Post, Review, Ticket, Joke, Lead
+from .models import Partner, Post, Review, Ticket, Joke, HexJoke, Lead
 
 @admin.register(Lead)
 class LeadAdmin(admin.ModelAdmin):
@@ -37,4 +38,39 @@ class JokeAdmin(admin.ModelAdmin):
     list_display = ('name', 'text', 'is_published', 'created_at')
     list_filter = ('is_published',)
     search_fields = ('name', 'text')
+    list_editable = ('is_published',)
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).exclude(text__startswith='[HEX]')
+
+@admin.register(HexJoke)
+class HexJokeAdmin(admin.ModelAdmin):
+    list_display = ('name', 'preview_text', 'is_published', 'created_at')
+    list_filter = ('is_published',)
+    search_fields = ('name', 'text')
+    list_editable = ('is_published',)
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).filter(text__startswith='[HEX]')
+
+    @admin.display(description='Текст анекдота')
+    def preview_text(self, obj):
+        raw = obj.text[5:].strip()
+        clean = re.sub(r'[^0-9a-fA-F]', '', raw)
+        try:
+            return bytes.fromhex(clean).decode('utf-8')
+        except Exception:
+            return raw[:60]
+
+    def save_model(self, request, obj, form, change):
+        raw = obj.text.strip()
+        if raw.startswith('[HEX]'):
+            raw = raw[5:].strip()
+        clean_hex = re.sub(r'\s+', '', raw)
+        if re.fullmatch(r'(?:[0-9a-fA-F]{2})+', clean_hex):
+            hex_str = ' '.join(clean_hex[i:i+2].lower() for i in range(0, len(clean_hex), 2))
+        else:
+            b = raw.encode('utf-8')
+            hex_str = ' '.join(f'{x:02x}' for x in b)
+        obj.text = '[HEX]' + hex_str
+        super().save_model(request, obj, form, change)
