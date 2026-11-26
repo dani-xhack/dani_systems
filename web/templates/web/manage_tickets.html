@@ -155,7 +155,7 @@ function openTicket(row){
     document.getElementById('det-placeholder').style.display='none';
     document.getElementById('det-body').style.display='block';
     document.getElementById('det-title').textContent='Заявка #'+id+': '+row.dataset.title;
-    document.getElementById('det-client-badge').innerHTML='Клиент: <b>'+row.dataset.client+'</b> · Остаток: <b style="color:var(--accent)">'+mins+' мин ('+hrs+' ч)</b>';
+    const cb=document.getElementById('det-client-badge');cb.textContent='Клиент: '+row.dataset.client+' · Остаток: '+mins+' мин ('+hrs+' ч)';
     document.getElementById('det-desc').textContent=row.dataset.desc;
     document.getElementById('det-partner').value=row.dataset.partner;
     document.getElementById('det-status').value=row.dataset.status;
