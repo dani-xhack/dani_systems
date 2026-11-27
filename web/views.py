@@ -204,3 +204,11 @@ def blog_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id, is_published=True)
     return render(request, 'web/blog_detail.html', {'post': post})
 
+
+
+def privacy_policy(request):
+    return render(request, 'web/privacy.html')
+
+
+def public_offer(request):
+    return render(request, 'web/offer.html')

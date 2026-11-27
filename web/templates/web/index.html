@@ -194,7 +194,7 @@ details.faq-item p{margin-top:.8rem;margin-bottom:0}
 <input type="tel" name="phone" placeholder="Телефон или MAX" required>
 <label style="display:flex;align-items:flex-start;gap:.6rem;text-align:left;font-size:.82rem;color:var(--text-muted);line-height:1.35;margin:.2rem 0 .4rem">
 <input type="checkbox" name="agree_pdn" required style="width:16px;height:16px;margin-top:2px;accent-color:var(--accent);cursor:pointer;flex-shrink:0">
-<span>Даю согласие на обработку моих персональных данных в соответствии с ФЗ-152 для связи и консультации.</span>
+<span>Даю согласие на <a href="/privacy/" target="_blank" style="color:var(--accent)">обработку персональных данных (152-ФЗ)</a> и принимаю условия <a href="/offer/" target="_blank" style="color:var(--accent)">публичной оферты</a>.</span>
 </label>
 <button type="submit" class="btn">Получить консультацию</button>
 </form>
@@ -228,5 +228,10 @@ document.querySelector('#contact form').addEventListener('submit',function(){
 });
 if(window.history.replaceState&&(location.search.includes('success')||location.search.includes('review_sent')))window.history.replaceState(null,null,window.location.pathname);
 </script>
+<div id="cookie-bar" style="display:none;position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);width:calc(100% - 2rem);max-width:760px;background:#0f172a;border:1px solid var(--accent);border-radius:16px;padding:.9rem 1.2rem;z-index:999;box-shadow:0 12px 35px rgba(0,0,0,.6);align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap">
+<span style="font-size:.84rem;color:var(--text-muted);line-height:1.4;flex:1;min-width:220px">Мы используем технические файлы cookie для работы личного кабинета и защиты форм. Продолжая пользоваться сайтом, вы соглашаетесь с <a href="/privacy/" style="color:var(--accent)">Политикой обработки ПДн</a>.</span>
+<button type="button" class="btn" style="margin:0;padding:.45rem 1.1rem;font-size:.85rem" onclick="localStorage.setItem('ds_cookie_ok','1');document.getElementById('cookie-bar').style.display='none'">Принять</button>
+</div>
+<script>if(!localStorage.getItem('ds_cookie_ok'))document.getElementById('cookie-bar').style.display='flex';</script>
 </body></html>
 

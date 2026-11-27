@@ -41,12 +41,12 @@
 {% if role == 'partner' %}
 <label class="offer-row">
 <input type="checkbox" name="agree_offer" id="agree_offer" required>
-<span>Подтверждаю статус ИП или самозанятого, даю согласие на обработку персональных данных (152-ФЗ) и принимаю условия <button type="button" class="offer-link" onclick="openOffer()">партнёрской оферты Dani Systems</button> (80% / 20%).</span>
+<span>Подтверждаю статус ИП или самозанятого, даю согласие на <a href="/privacy/" target="_blank" style="color:var(--accent)">обработку персональных данных (152-ФЗ)</a> и принимаю условия <button type="button" class="offer-link" onclick="openOffer()">партнёрской оферты Dani Systems</button> (80% / 20%).</span>
 </label>
 {% else %}
 <label class="offer-row">
 <input type="checkbox" name="agree_pdn" required>
-<span>Даю согласие на обработку моих персональных данных в соответствии с ФЗ-152 для регистрации и работы в личном кабинете.</span>
+<span>Даю согласие на <a href="/privacy/" target="_blank" style="color:var(--accent)">обработку персональных данных (152-ФЗ)</a> и принимаю условия <a href="/offer/" target="_blank" style="color:var(--accent)">публичной оферты</a>.</span>
 </label>
 {% endif %}
 
